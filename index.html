@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Collage de Aniversario 💖</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; text-align: center; background: #222; color: white; padding: 20px;
+        }
+        h1 { margin-bottom: 20px; }
+        #fileInput { margin-bottom: 20px; }
+        #collage {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px; margin-top: 20px;
+        }
+        .foto {
+            max-width: 100%; border-radius: 12px; transition: transform 0.3s;
+        }
+        .foto:hover { transform: scale(1.1); }
+        #downloadBtn {
+            margin-top: 20px; padding: 10px 20px; font-size: 16px;
+            background-color: #ff4081; color: white; border: none; border-radius: 8px; cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>✨ Collage de Aniversario 💕</h1>
+
+    <!-- Input para cargar las imágenes -->
+    <input type="file" id="fileInput" accept="image/*" multiple>
+
+    <!-- Botón para descargar el collage -->
+    <button id="downloadBtn" onclick="descargarCollage()">Descargar Collage 📸</button>
+
+    <!-- Área del collage -->
+    <div id="collage"></div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const collage = document.getElementById('collage');
+
+        // Mostrar las imágenes en el collage
+        fileInput.addEventListener('change', () => {
+            collage.innerHTML = ''; // Limpiar el collage
+            Array.from(fileInput.files).forEach(file => {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'foto';
+                collage.appendChild(img);
+            });
+        });
+
+        // Descargar el collage como imagen
+        async function descargarCollage() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const fotos = document.querySelectorAll('.foto');
+
+            const filas = Math.ceil(fotos.length / 3);
+            const tamaño = 300;
+            canvas.width = 3 * tamaño;
+            canvas.height = filas * tamaño;
+
+            for (let i = 0; i < fotos.length; i++) {
+                const img = fotos[i];
+                await new Promise(resolve => {
+                    const tempImg = new Image();
+                    tempImg.src = img.src;
+                    tempImg.onload = () => {
+                        const x = (i % 3) * tamaño;
+                        const y = Math.floor(i / 3) * tamaño;
+                        ctx.drawImage(tempImg, x, y, tamaño, tamaño);
+                        resolve();
+                    };
+                });
+            }
+
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'collage_aniversario.png';
+            link.click();
+        }
+    </script>
+
+</body>
+
+</html>
