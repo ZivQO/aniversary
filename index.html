@@ -2,132 +2,54 @@
 <html lang="es">
 
 <head>
-    <title>Collage de Aniversario 💖</title>
+    <title>Feliz Aniversario 💖</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            font-family: Arial, sans-serif; text-align: center; background: #222; color: white; padding: 20px;
+            font-family: Arial, sans-serif; text-align: center; background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: white; padding: 20px; overflow-x: hidden;
         }
-        h1 { margin-bottom: 20px; }
-        #fileInput { margin-bottom: 20px; }
-        #collage {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px; margin-top: 20px;
+        h1 { font-size: 3em; margin-bottom: 40px; animation: fadeIn 1.5s ease-in-out; }
+        .boton {
+            display: inline-block; padding: 15px 30px; margin: 10px;
+            font-size: 18px; background: #ff4081; color: white; border: none;
+            border-radius: 30px; cursor: pointer; transition: transform 0.3s;
         }
-        .foto {
-            max-width: 100%; border-radius: 12px; transition: transform 0.3s, opacity 1s ease;
-            opacity: 0; /* Oculta las imágenes al inicio */
-            animation: bounceIn 0.8s ease-out;
-        }
-        .foto:hover { 
-            transform: scale(1.1) rotate(5deg); /* Zoom + Rotación */
-        }
-        #downloadBtn {
-            margin-top: 20px; padding: 15px 30px; font-size: 18px;
-            background-color: #ff4081; color: white; border: none; border-radius: 12px; cursor: pointer;
-            transition: transform 0.2s;
-        }
-        #downloadBtn:active {
-            animation: vibrate 0.2s ease-in-out 2;
-        }
+        .boton:hover { transform: scale(1.1); }
 
-        /* Animación de fade-in */
+        /* Animaciones */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* Animación de rebote (Bounce) */
-        @keyframes bounceIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            60% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-
-        /* Animación de vibración del botón */
-        @keyframes vibrate {
-            0% { transform: translateX(-2px); }
-            25% { transform: translateX(2px); }
-            50% { transform: translateX(-2px); }
-            75% { transform: translateX(2px); }
-            100% { transform: translateX(0); }
-        }
-
         /* Ajustes para dispositivos móviles */
         @media (max-width: 600px) {
-            #collage {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            }
-            #downloadBtn {
-                font-size: 14px; padding: 10px 20px;
-            }
+            h1 { font-size: 2em; }
+            .boton { font-size: 14px; padding: 10px 20px; }
         }
-
     </style>
 </head>
 
 <body>
-    <h1>✨ Collage de Aniversario 💕</h1>
+    <h1>🎉 ¡Feliz Aniversario! 💕</h1>
 
-    <!-- Input para cargar las imágenes -->
-    <input type="file" id="fileInput" accept="image/*" multiple>
-
-    <!-- Botón para descargar el collage -->
-    <button id="downloadBtn" onclick="descargarCollage()">Descargar Collage 📸</button>
-
-    <!-- Área del collage -->
-    <div id="collage"></div>
+    <!-- Botones de experiencias -->
+    <button class="boton" onclick="irA('flores')">🌸 Flores</button>
+    <button class="boton" onclick="irA('hotel')">🏨 Escapada Romántica</button>
+    <button class="boton" onclick="irA('cena')">🍽️ Cena Especial</button>
+    <button class="boton" onclick="irA('brindis')">🥂 Brindis</button>
+    <button class="boton" onclick="irA('juegos')">🎮 Diversión Juntos</button>
+    <button class="boton" onclick="irA('desayuno')">🍳 Desayuno</button>
+    <button class="boton" onclick="irA('playa')">🏖️ Día de Playa</button>
+    <button class="boton" onclick="irA('almuerzo')">🍔 Almuerzo</button>
+    <button class="boton" onclick="irA('compras')">🛍️ Compras</button>
 
     <script>
-        const fileInput = document.getElementById('fileInput');
-        const collage = document.getElementById('collage');
-
-        // Mostrar las imágenes en el collage
-        fileInput.addEventListener('change', () => {
-            collage.innerHTML = ''; // Limpiar el collage
-            Array.from(fileInput.files).forEach(file => {
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                img.className = 'foto';
-                collage.appendChild(img);
-
-                // Aplicar fade-in después de añadir
-                setTimeout(() => img.style.opacity = 1, 100);
-            });
-        });
-
-        // Descargar el collage como imagen
-        async function descargarCollage() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const fotos = document.querySelectorAll('.foto');
-
-            const filas = Math.ceil(fotos.length / 3);
-            const tamaño = 300;
-            canvas.width = 3 * tamaño;
-            canvas.height = filas * tamaño;
-
-            for (let i = 0; i < fotos.length; i++) {
-                const img = fotos[i];
-                await new Promise(resolve => {
-                    const tempImg = new Image();
-                    tempImg.src = img.src;
-                    tempImg.onload = () => {
-                        const x = (i % 3) * tamaño;
-                        const y = Math.floor(i / 3) * tamaño;
-                        ctx.drawImage(tempImg, x, y, tamaño, tamaño);
-                        resolve();
-                    };
-                });
-            }
-
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = 'collage_aniversario.png';
-            link.click();
+        function irA(seccion) {
+            window.location.href = seccion + ".html";
         }
     </script>
-
 </body>
 
 </html>
