@@ -14,13 +14,44 @@
             gap: 10px; margin-top: 20px;
         }
         .foto {
-            max-width: 100%; border-radius: 12px; transition: transform 0.3s;
+            max-width: 100%; border-radius: 12px; transition: transform 0.3s, opacity 1s ease;
+            opacity: 0; /* Oculta las imágenes al inicio */
+            animation: bounceIn 0.8s ease-out;
         }
-        .foto:hover { transform: scale(1.1); }
+        .foto:hover { 
+            transform: scale(1.1) rotate(5deg); /* Zoom + Rotación */
+        }
         #downloadBtn {
             margin-top: 20px; padding: 10px 20px; font-size: 16px;
             background-color: #ff4081; color: white; border: none; border-radius: 8px; cursor: pointer;
+            transition: transform 0.2s;
         }
+        #downloadBtn:active {
+            animation: vibrate 0.2s ease-in-out 2;
+        }
+
+        /* Animación de fade-in */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Animación de rebote (Bounce) */
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* Animación de vibración del botón */
+        @keyframes vibrate {
+            0% { transform: translateX(-2px); }
+            25% { transform: translateX(2px); }
+            50% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+            100% { transform: translateX(0); }
+        }
+
     </style>
 </head>
 
@@ -48,6 +79,9 @@
                 img.src = URL.createObjectURL(file);
                 img.className = 'foto';
                 collage.appendChild(img);
+
+                // Aplicar fade-in después de añadir
+                setTimeout(() => img.style.opacity = 1, 100);
             });
         });
 
